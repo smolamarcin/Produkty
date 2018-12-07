@@ -160,8 +160,7 @@ class Calculator {
     private static void updateCategoryWithClientOrders(String category, Map<Client, Integer> clientOrders, Map
             <String, Map<Client, Integer>> categoryWithClientOrders) {
         if (categoryWithClientOrders.containsKey(category)) {
-            if (categoryWithClientOrders.get(category).values().stream().reduce(Integer::sum).get() <
-                    clientOrders.values().stream().reduce(Integer::sum).get()) {
+            if (needToUpdateMap(category, clientOrders, categoryWithClientOrders)) {
                 categoryWithClientOrders.put(category, clientOrders);
             }
         } else {
@@ -169,15 +168,17 @@ class Calculator {
         }
     }
 
+    private static boolean needToUpdateMap(String category, Map<Client, Integer> clientOrders, Map<String, Map<Client, Integer>>
+            categoryWithClientOrders) {
+        return categoryWithClientOrders.get(category).values().stream().reduce(Integer::sum).get() <
+                clientOrders.values().stream().reduce(Integer::sum).get();
+    }
+
 
     private static boolean isAbleToPay(Map.Entry<Client, BigDecimal> clientWithOrderPrice) {
         BigDecimal totalPrice = clientWithOrderPrice.getValue();
         BigDecimal balance = clientWithOrderPrice.getKey().getBalance();
-
-        if (balance.compareTo(totalPrice) == 1){
-            return true;
-        }
-        return false;
+        return balance.compareTo(totalPrice) > 0;
     }
 
     private static BigDecimal calculateDebt(Map.Entry<Client, BigDecimal> entry) {

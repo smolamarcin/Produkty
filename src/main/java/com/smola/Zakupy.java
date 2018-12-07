@@ -3,7 +3,7 @@ package com.smola;
 import java.util.*;
 
 public class Zakupy {
-    Map<Client,Map<Product,Integer>> orders;
+    private Map<Client,Map<Product,Integer>> orders;
 
     public Zakupy(String... files) {
         fillMap(files);
@@ -14,5 +14,7 @@ public class Zakupy {
         orders=  Parser.readClientsWithOrders(lines);
     }
 
-
+    public Map<Client, Map<Product, Integer>> getOrders() {
+        return Collections.unmodifiableMap(this.orders);
+    }
 }

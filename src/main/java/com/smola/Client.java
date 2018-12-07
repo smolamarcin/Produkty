@@ -16,13 +16,6 @@ public final class Client {
         this.balance = balance;
     }
 
-    public Client(String name, String surname, Integer age) {
-        this.name = name;
-        this.surname = surname;
-        this.age = age;
-        this.balance = null;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
