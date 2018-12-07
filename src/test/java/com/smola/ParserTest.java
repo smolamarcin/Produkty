@@ -21,26 +21,26 @@ public class ParserTest {
     @Test
     public void shouldRetrieveAllClientsFromFile() {
         List<String> lines = Parser.readLinesFromFile("zamowieniaTest.csv");
-        List<Klient> clients = Parser.retrieveClientsData(lines);
+        List<Client> clients = Parser.retrieveClientsData(lines);
 
         assertEquals(5,clients.size());
-        assertTrue(clients.contains(new Klient("Jan","Kos",18,new BigDecimal("2000"))));
-        assertTrue(clients.contains(new Klient("Jan","Kos",18,new BigDecimal("2000"))));
-        assertTrue(clients.contains(new Klient("Milosz","Wrona",18,new BigDecimal("12850"))));
-        assertTrue(clients.contains(new Klient("Michal","Kowalski",18,new BigDecimal("3423"))));
-        assertTrue(clients.contains(new Klient("Janina","Nowak",38,new BigDecimal("3434"))));
+        assertTrue(clients.contains(new Client("Jan","Kos",18,new BigDecimal("2000"))));
+        assertTrue(clients.contains(new Client("Jan","Kos",18,new BigDecimal("2000"))));
+        assertTrue(clients.contains(new Client("Milosz","Wrona",18,new BigDecimal("12850"))));
+        assertTrue(clients.contains(new Client("Michal","Kowalski",18,new BigDecimal("3423"))));
+        assertTrue(clients.contains(new Client("Janina","Nowak",38,new BigDecimal("3434"))));
     }
 
     @Test
     public void shouldRetrieveClientsWithOrders() {
         List<String> lines = Parser.readLinesFromFile("zamowieniaTest.csv");
         Parser.readClientsWithOrders(lines);
-        Map<Klient,Map<Produkt,Integer>> clientsWithOrders =Parser.readClientsWithOrders(lines);
+        Map<Client,Map<Product,Integer>> clientsWithOrders =Parser.readClientsWithOrders(lines);
 
-        Klient sampleClient = new Klient("Jan","Kos",18,new BigDecimal("2000"));
-        Map<Produkt,Integer> expectedClientProducts = new HashMap<>();
-        expectedClientProducts.put(new Produkt("Komputer","Elektronika",new BigDecimal("3400")),4);
-        expectedClientProducts.put(new Produkt("PanTadeusz","Ksiazka",new BigDecimal("120")),2);
+        Client sampleClient = new Client("Jan","Kos",18,new BigDecimal("2000"));
+        Map<Product,Integer> expectedClientProducts = new HashMap<>();
+        expectedClientProducts.put(new Product("Komputer","Elektronika",new BigDecimal("3400")),4);
+        expectedClientProducts.put(new Product("PanTadeusz","Ksiazka",new BigDecimal("120")),2);
 
         assertEquals(clientsWithOrders.size(),4);
         assertEquals(clientsWithOrders.get(sampleClient),expectedClientProducts);
@@ -50,12 +50,12 @@ public class ParserTest {
     public void shouldSumOrdersFromMultipleFiles() {
         List<String> lines = Parser.readLinesFromFile("zamowieniaTest.csv","zamowieniaTest2.csv");
         Parser.readClientsWithOrders(lines);
-        Map<Klient,Map<Produkt,Integer>> actuaClientsWithOrders =Parser.readClientsWithOrders(lines);
+        Map<Client,Map<Product,Integer>> actuaClientsWithOrders =Parser.readClientsWithOrders(lines);
 
-        Klient expectedClient = new Klient("Jan","Kos",18,new BigDecimal("2000"));
-        Map<Produkt,Integer> expectedClientProdcts = new HashMap<>();
-        expectedClientProdcts.put(new Produkt("Komputer","Elektronika",new BigDecimal("3400")),6);
-        expectedClientProdcts.put(new Produkt("PanTadeusz","Ksiazka",new BigDecimal("120")),3);
+        Client expectedClient = new Client("Jan","Kos",18,new BigDecimal("2000"));
+        Map<Product,Integer> expectedClientProdcts = new HashMap<>();
+        expectedClientProdcts.put(new Product("Komputer","Elektronika",new BigDecimal("3400")),6);
+        expectedClientProdcts.put(new Product("PanTadeusz","Ksiazka",new BigDecimal("120")),3);
 
         assertEquals(actuaClientsWithOrders.size(),4);
         assertEquals(actuaClientsWithOrders.get(expectedClient),expectedClientProdcts);

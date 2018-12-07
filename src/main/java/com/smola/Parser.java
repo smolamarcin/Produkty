@@ -12,18 +12,18 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Parser {
-    static List<List<Produkt>> retrieveProducts(List<String> lines) {
+    static List<List<Product>> retrieveProducts(List<String> lines) {
         List<String> productsData = new ArrayList<>();
         for (String line : lines) {
             productsData.add(line.substring(line.indexOf("[") + 2, line.indexOf("]")));
         }
-        List<List<Produkt>> products = new ArrayList<>();
+        List<List<Product>> products = new ArrayList<>();
         productsData.stream().map(line -> line.split(" ")).
                 forEach(array -> {
-                    List<Produkt> productsForSingleCLient = new ArrayList<>();
+                    List<Product> productsForSingleCLient = new ArrayList<>();
                     for (String s : array) {
                         String[] splitted = s.split(";");
-                        productsForSingleCLient.add(new Produkt(splitted[0], splitted[1], new BigDecimal(splitted[2])));
+                        productsForSingleCLient.add(new Product(splitted[0], splitted[1], new BigDecimal(splitted[2])));
                     }
                     products.add(productsForSingleCLient);
                 });
@@ -42,45 +42,45 @@ public class Parser {
         return lines;
     }
 
-    static List<Klient> retrieveClientsData(List<String> lines) {
+    static List<Client> retrieveClientsData(List<String> lines) {
         List<String> clientsData = new ArrayList<>();
         for (String line : lines) {
             clientsData.add(line.substring(0, line.indexOf(" [")));
         }
 
         return clientsData.stream().map(line -> line.split(";"))
-                .map(line -> new Klient(line[0], line[1], Integer.valueOf(line[2]), new BigDecimal(line[3])))
+                .map(line -> new Client(line[0], line[1], Integer.valueOf(line[2]), new BigDecimal(line[3])))
                 .collect(Collectors.toList());
     }
 
-    static Map<Klient, Map<Produkt, Integer>> readClientsWithOrders(List<String> lines) {
-        Map<Klient, Map<Produkt, Integer>> clientsWithOrders = new HashMap<>();
-        List<Klient> clients = retrieveClientsData(lines);
-        List<List<Produkt>> products = retrieveProducts(lines);
+    static Map<Client, Map<Product, Integer>> readClientsWithOrders(List<String> lines) {
+        Map<Client, Map<Product, Integer>> clientsWithOrders = new HashMap<>();
+        List<Client> clients = retrieveClientsData(lines);
+        List<List<Product>> products = retrieveProducts(lines);
 
-        Map<Produkt, Integer> orders;
+        Map<Product, Integer> orders;
         for (int i = 0; i < products.size(); i++) {
             orders = new HashMap<>();
-            Klient client = clients.get(i);
+            Client client = clients.get(i);
             for (int j = 0; j < products.get(i).size(); j++) {
-                Produkt key = products.get(i).get(j);
+                Product key = products.get(i).get(j);
                 orders.put(key, orders.getOrDefault(key, 0) + 1);
             }
-            Map<Produkt, Integer> mergeMaps = mergeMaps(clientsWithOrders.get(client), orders);
+            Map<Product, Integer> mergeMaps = mergeMaps(clientsWithOrders.get(client), orders);
             clientsWithOrders.put(client, mergeMaps);
         }
         return clientsWithOrders;
     }
 
 
-    private static Map<Produkt, Integer> mergeMaps(Map<Produkt, Integer> existingMap, Map<Produkt, Integer>
+    private static Map<Product, Integer> mergeMaps(Map<Product, Integer> existingMap, Map<Product, Integer>
             mapToMerge) {
         if (existingMap == null){
             return mapToMerge;
         }else {
-            for (Produkt produkt : existingMap.keySet()) {
-                Integer count = mapToMerge.containsKey(produkt) ? mapToMerge.get(produkt) : 0;
-                existingMap.put(produkt,existingMap.get(produkt) + count);
+            for (Product product : existingMap.keySet()) {
+                Integer count = mapToMerge.containsKey(product) ? mapToMerge.get(product) : 0;
+                existingMap.put(product,existingMap.get(product) + count);
             }
             mapToMerge.forEach((k,v)->existingMap.putIfAbsent(k,v));
             return existingMap;

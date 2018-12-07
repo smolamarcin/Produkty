@@ -3,7 +3,7 @@ package com.smola;
 import java.util.*;
 
 public class Zakupy {
-    Map<Klient,Map<Produkt,Integer>> orders;
+    Map<Client,Map<Product,Integer>> orders;
 
     public Zakupy(String... files) {
         fillMap(files);

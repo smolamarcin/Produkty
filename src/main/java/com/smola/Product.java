@@ -3,12 +3,12 @@ package com.smola;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public final class Produkt {
+public final class Product {
     private final String productName;
     private final String category;
     private final BigDecimal price;
 
-    public Produkt(String productName, String category, BigDecimal price) {
+    public Product(String productName, String category, BigDecimal price) {
         this.productName = productName;
         this.category = category;
         this.price = price;
@@ -18,10 +18,10 @@ public final class Produkt {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Produkt produkt = (Produkt) o;
-        return Objects.equals(productName, produkt.productName) &&
-                Objects.equals(category, produkt.category) &&
-                Objects.equals(price, produkt.price);
+        Product product = (Product) o;
+        return Objects.equals(productName, product.productName) &&
+                Objects.equals(category, product.category) &&
+                Objects.equals(price, product.price);
     }
 
     @Override
@@ -39,7 +39,7 @@ public final class Produkt {
 
     @Override
     public String toString() {
-        return "Produkt{" +
+        return "Product{" +
                 "productName='" + productName + '\'' +
                 ", category='" + category + '\'' +
                 ", price=" + price +

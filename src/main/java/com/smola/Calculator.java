@@ -6,20 +6,29 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 class Calculator {
-    public static Klient calculateMostValuableClient(Map<Klient,Map<Produkt,Integer>> orders) {
-        Map<Klient, BigDecimal> clientWithOrderSummary = orders
-                .entrySet()
+    static Client calculateMostValuableClient(Map<Client,Map<Product,Integer>> orders) {
+        Map<Client, BigDecimal> clientsWithSummaryOrder = orders.entrySet()
                 .stream()
-                .collect(Collectors.toMap(Map.Entry::getKey,
-                entry -> entry.getValue().entrySet().stream().map(calculateTotalOrderPrice())
-                        .max(Comparator.naturalOrder())
-                        .orElse(BigDecimal.ZERO)));
+                .collect(Collectors.toMap(singleEntry -> singleEntry.getKey()
+                        , map -> sumOrders(map.getValue())));
 
-        return clientWithOrderSummary.entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
+        return clientsWithSummaryOrder.entrySet()
+                .stream()
+                .max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
+    }
+    private static BigDecimal sumOrders(Map<Product, Integer> clientOrders) {
+        return clientOrders.entrySet()
+                .stream()
+                .map(e-> calculateProductsPrice(e))
+                .reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
     }
 
-    public static Klient calculateMostValuableClient(Map<Klient, Map<Produkt, Integer>> orders, String category) {
-        Map<Klient, BigDecimal> clientWithOrderSummary = orders
+    private static BigDecimal calculateProductsPrice(Map.Entry<Product, Integer> product) {
+        return product.getKey().getPrice().multiply(BigDecimal.valueOf(product.getValue())) ;
+    }
+
+    static Client calculateMostValuableClient(Map<Client, Map<Product, Integer>> orders, String category) {
+        Map<Client, BigDecimal> clientWithOrderSummary = orders
                 .entrySet()
                 .stream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
@@ -31,44 +40,44 @@ class Calculator {
         return clientWithOrderSummary.entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
     }
 
-    public static Map<String,BigDecimal> calculateAveragePriceForProductCategories(Map<Klient, Map<Produkt, Integer>> orders) {
+    static Map<String,BigDecimal> calculateAveragePriceForProductCategories(Map<Client, Map<Product, Integer>> orders) {
 
-        Map<String, List<Produkt>> categoriesWithProducts = groupProductsByCategories(orders);
+        Map<String, List<Product>> categoriesWithProducts = groupProductsByCategories(orders);
 
         return categoriesWithProducts.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
                         p->calculateAveragePrice(p.getValue())));
     }
 
-    public static Map<String, Produkt> calculateMaxPricesForCategories(Map<Klient, Map<Produkt, Integer>> orders) {
-        Map<String, List<Produkt>> categoriesWithProducts = groupProductsByCategories(orders);
+    static Map<String, Product> calculateMaxPricesForCategories(Map<Client, Map<Product, Integer>> orders) {
+        Map<String, List<Product>> categoriesWithProducts = groupProductsByCategories(orders);
 
         return categoriesWithProducts.entrySet()
                 .stream()
                 .collect(Collectors.toMap(Map.Entry::getKey,p->calculateMaxPrice(p.getValue())));
     }
 
-    private static Produkt calculateMaxPrice(List<Produkt> singleCategoryProducts) {
-        return singleCategoryProducts.stream().max(Comparator.comparing(Produkt::getPrice)).get();
+    private static Product calculateMaxPrice(List<Product> singleCategoryProducts) {
+        return singleCategoryProducts.stream().max(Comparator.comparing(Product::getPrice)).get();
     }
 
-    private static Function<Map.Entry<Produkt, Integer>, BigDecimal> calculateTotalOrderPrice() {
+    private static Function<Map.Entry<Product, Integer>, BigDecimal> calculateTotalOrderPrice() {
         return p -> p.getKey().getPrice().multiply(BigDecimal
                 .valueOf(p.getValue()));
     }
 
-    private static BigDecimal calculateAveragePrice(List<Produkt> singleCategory) {
+    private static BigDecimal calculateAveragePrice(List<Product> singleCategory) {
         return singleCategory
                 .stream()
                 .map(e->e.getPrice())
                 .reduce(BigDecimal.ZERO,BigDecimal::add)
                 .divide(BigDecimal.valueOf(singleCategory.size()));
     }
-    private static Produkt calculateMinPrice(List<Produkt> singleCategory) {
-        return singleCategory.stream().min(Comparator.comparing(Produkt::getPrice)).get();
+    private static Product calculateMinPrice(List<Product> singleCategory) {
+        return singleCategory.stream().min(Comparator.comparing(Product::getPrice)).get();
     }
 
-    private static Map<String, List<Produkt>> groupProductsByCategories(Map<Klient, Map<Produkt, Integer>> orders) {
+    private static Map<String, List<Product>> groupProductsByCategories(Map<Client, Map<Product, Integer>> orders) {
         return orders.entrySet().stream()
                 .flatMap(e -> e.getValue()
                         .keySet()
@@ -76,11 +85,18 @@ class Calculator {
                 .collect(Collectors.groupingBy(p -> p.getCategory()));
     }
 
-    public static Map<String, Produkt> calculateMinPricesForCategories(Map<Klient, Map<Produkt, Integer>> orders) {
-        Map<String, List<Produkt>> categoriesWithProducts = groupProductsByCategories(orders);
+    static Map<String, Product> calculateMinPricesForCategories(Map<Client, Map<Product, Integer>> orders) {
+        Map<String, List<Product>> categoriesWithProducts = groupProductsByCategories(orders);
 
         return categoriesWithProducts.entrySet()
                 .stream()
                 .collect(Collectors.toMap(Map.Entry::getKey,p->calculateMinPrice(p.getValue())));
     }
+
+    static Map<String, Client> findMostActiveClientsForEachCategory(Map<Client, Map<Product, Integer>> orders) {
+
+        return null;
+    }
+
+
 }
