@@ -4,8 +4,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.testng.Assert.*;
 
@@ -83,10 +82,12 @@ public class CalculatorTest {
     public void findMostActiveClients_forEachCategory() {
         Map<String, Client> actualMap = Calculator.findMostActiveClientsForEachCategory(orders);
 
-        Map<Client, String> expectedMap = new HashMap<>();
-        expectedMap.put( new Client("Jan", "Kos", 18, new BigDecimal("20000")),"Elektronika");
-        expectedMap.put( new Client("Jan", "Kowalski", 19, new BigDecimal("1000")),"Ksiazka");
+        Map<String,Client> expectedMap = new HashMap<>();
+        expectedMap.put( "Elektronika",new Client("Jan", "Kos", 18, new BigDecimal("20000")));
+        expectedMap.put( "Ksiazka",new Client("Jan", "Kowalski", 19, new BigDecimal("1000")));
 
         assertEquals(actualMap, expectedMap);
     }
+
+
 }
