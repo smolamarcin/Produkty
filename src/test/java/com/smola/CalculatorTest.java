@@ -18,7 +18,6 @@ public class CalculatorTest {
         Map<Product, Integer> sampleCLientOneProducts = new HashMap<>();
         sampleCLientOneProducts.put(new Product("Komputer", "Elektronika", new BigDecimal("3400")), 6);
         sampleCLientOneProducts.put(new Product("PanTadeusz", "Ksiazka", new BigDecimal("120")), 1);
-
         Client sampleClientTwo = new Client("Jan", "Kowalski", 19, new BigDecimal("1000"));
         Map<Product, Integer> sampleCLientTwoProducts = new HashMap<>();
         sampleCLientTwoProducts.put(new Product("Potop", "Ksiazka", new BigDecimal("300")), 1);
@@ -28,7 +27,6 @@ public class CalculatorTest {
 
         orders.put(sampleClientOne, sampleCLientOneProducts);
         orders.put(sampleClientTwo, sampleCLientTwoProducts);
-
     }
 
     @Test
@@ -89,5 +87,37 @@ public class CalculatorTest {
         assertEquals(actualMap, expectedMap);
     }
 
+    @Test
+    public void findAgeOfMostActiveCLient_forEachCategory() {
+        Map<String,Integer> actualMap = Calculator.findAgesOfClientsForEachCategory(orders);
 
+        Map<String,Integer> expectedMap = new HashMap<>();
+        expectedMap.put( "Elektronika",18);
+        expectedMap.put( "Ksiazka",19);
+
+        assertEquals(actualMap,expectedMap);
+    }
+
+    @Test
+    public void areClientAbleToPayForOrders() {
+        Map<Boolean,List<Client>> actualMap = Calculator.areClientAbleToPayForOrders(orders);
+
+        Map<Boolean,List<Client>> expectedMap = new HashMap<>();
+        expectedMap.put( false,Arrays.asList(new Client("Jan", "Kowalski", 19, new BigDecimal("1000")),
+                new Client("Jan", "Kos", 18, new BigDecimal("20000"))));
+
+
+        assertEquals(actualMap,expectedMap);
+    }
+
+    @Test
+    public void shouldCreateMapWithClientsDebt() {
+        Map<Client,BigDecimal> actualMap = Calculator.createMapWithCLientsDebt(orders);
+
+        Map<Client,BigDecimal> expectedMap = new HashMap<>();
+        expectedMap.put((new Client("Jan", "Kos", 18, new BigDecimal("20000"))),BigDecimal.valueOf(-520));
+        expectedMap.put((new Client("Jan", "Kowalski", 19, new BigDecimal("1000"))),BigDecimal.valueOf(-2420));
+
+
+        assertEquals(actualMap,expectedMap);    }
 }

@@ -48,4 +48,12 @@ public final class Client {
                 ", balance=" + balance +
                 '}';
     }
+
+    public int getAge() {
+        return age;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
 }
