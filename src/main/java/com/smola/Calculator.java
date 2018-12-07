@@ -97,25 +97,7 @@ class Calculator {
     }
 
     static Map<String, Client> findMostActiveClientsForEachCategory(Map<Client, Map<Product, Integer>> orders) {
-        // najpierw mapa Map<String,Map<Client,Integer> -> czyli mapa przechowujaca informacje o tmy ile kto kupil produktow danej kategorii
-
-//        for (Map.Entry<Client, Map<Product, Integer>> ordersEntries : orders.entrySet()) {
-//            Map<Product, Integer> singleClientOrders = ordersEntries.getValue();
-//            Map<Client, Integer> currentClientOrders = new HashMap<>();
-//            Client currentClient = ordersEntries.getKey();
-//            for (Map.Entry<Product, Integer> singleClientOrdersEntries : singleClientOrders.entrySet()) {
-//                String productCategory = singleClientOrdersEntries.getKey().getCategory();
-//                currentClientOrders.put(currentClient, singleClientOrdersEntries.getValue());
-//                categoriesWithOrders.put(productCategory, currentClientOrders);
-//            }
-//        }
-
         Map<String,Map<Client,Integer>> categoryWithClientOrders= new HashMap<>();
-
-//        orders.values().stream()
-//                .flatMap(e -> e.entrySet().stream())
-//                .collect(Collectors.groupingBy(e->e.getKey().getCategory(),Collectors.toMap(,k->k.getValue())));
-
 
         for (Map.Entry<Client, Map<Product, Integer>> entry : orders.entrySet()) {
             Set<Map.Entry<Product, Integer>> entries = entry.getValue().entrySet();
@@ -123,15 +105,24 @@ class Calculator {
                 Map<Client,Integer> clientOrders = new HashMap<>();
                 clientOrders.put(entry.getKey(),productIntegerEntry.getValue());
                 String category = productIntegerEntry.getKey().getCategory();
-                categoryWithClientOrders.put(category,clientOrders);
+                updateCategoryWithClientOrders(category,clientOrders,categoryWithClientOrders);
             }
-
-
         }
 
-//        return categoriesWithOrders.entrySet().stream()
-//                .collect(Collectors.toMap(k -> k.getKey(), v -> v.getValue().entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey()));
-        return null;
+        return categoryWithClientOrders.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey,e->e.getValue().keySet().stream().findFirst().get()));
+    }
+
+    private static void updateCategoryWithClientOrders(String category, Map<Client, Integer> clientOrders, Map
+            <String, Map<Client, Integer>> categoryWithClientOrders) {
+        if (categoryWithClientOrders.containsKey(category)){
+            if (categoryWithClientOrders.get(category).values().stream().reduce(Integer::sum).get() <
+                    clientOrders.values().stream().reduce(Integer::sum).get()){
+                categoryWithClientOrders.put(category,clientOrders);
+            }
+        }else {
+            categoryWithClientOrders.put(category,clientOrders);
+        }
     }
 
 
