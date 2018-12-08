@@ -1,17 +1,37 @@
 package com.smola;
 
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
-        Zakupy zakupy = new Zakupy("zamowieniaTest.csv");
+        Zakupy zakupy = new Zakupy("zamowieniaTest.csv","zamowieniaTest2.csv");
         System.out.println(zakupy);
-
-        Client client = Calculator.calculateMostValuableClient(zakupy.getOrders());
-        Client client2 = new Client("sd","sd", 1000,new BigDecimal(1200));
-        System.out.println(client2);
-        BigDecimal balance = client2.getBalance();
-        balance.subtract(BigDecimal.valueOf(200));
-        System.out.println(client);
+        //Wyznaczanie klienta, ktory zaplacil najwiecej za zakupy
+        Client mostValuableClient = Calculator.calculateMostValuableClient(zakupy.getOrders());
+        System.out.println(mostValuableClient);
+        //Wyznacz klienta, ktory zaplacil najwiecej za zakupy w danej kategorii
+        Client mostValuableCLientInCategory = Calculator.calculateMostValuableClient(zakupy.getOrders(), "ksiazka");
+        System.out.println(mostValuableCLientInCategory);
+        //Wykonaj zestawienie (mape), w ktorej pokazesz kategorie produktow, ktore najchetniej w tym wieku kupowano
+        Map<String, Integer> agesOfClientsForEachCategory = Calculator
+                .findAgesOfClientsForEachCategory(zakupy.getOrders());
+        System.out.println(agesOfClientsForEachCategory);
+        //Wykonaj zestawienie(mape), w ktorej pokazesz srednia cene produktow w danej kategorii
+        // Dodatkowo wyznacz dla kazdej kategorii produkt najtanszy oraz najdrozszy.
+        Map<String, BigDecimal> averagePriceForProductCategories = Calculator
+                .calculateAveragePriceForProductCategories(zakupy.getOrders());
+        System.out.println(averagePriceForProductCategories);
+        //Wyznacz klientow, ktorzy najczesciej kupowali produkty danej kategorii
+        Map<String, Client> mostActiveClientsForEachCategory = Calculator
+                .findMostActiveClientsForEachCategory(zakupy.getOrders());
+        System.out.println(mostActiveClientsForEachCategory);
+        //Sprawdz, czy klient jest w stanie zaplacic za zakupy.
+        Map<Boolean, List<Client>> clientAbleToPayForOrders = Calculator.areClientAbleToPayForOrders(zakupy.getOrders());
+        System.out.println(clientAbleToPayForOrders);
+        // Wykonaj mape, w ktorej jako klucz podasz klienta, a jako wartosc jego dlug
+        Map<Client, BigDecimal> mapWithCLientsDebt = Calculator.createMapWithCLientsDebt(zakupy.getOrders());
+        System.out.println(mapWithCLientsDebt);
     }
 }

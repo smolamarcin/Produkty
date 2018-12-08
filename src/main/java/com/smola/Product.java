@@ -8,7 +8,7 @@ public final class Product {
     private final String category;
     private final BigDecimal price;
 
-    public Product(String productName, String category, BigDecimal price) {
+    Product(String productName, String category, BigDecimal price) {
         this.productName = productName;
         this.category = category;
         this.price = price;

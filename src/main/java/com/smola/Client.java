@@ -9,7 +9,7 @@ public final class Client {
     private final int age;
     private final BigDecimal balance;
 
-    public Client(String name, String surname, int age, BigDecimal balance) {
+    Client(String name, String surname, int age, BigDecimal balance) {
         this.name = name;
         this.surname = surname;
         this.age = age;

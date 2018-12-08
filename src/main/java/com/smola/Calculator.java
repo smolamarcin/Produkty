@@ -1,6 +1,7 @@
 package com.smola;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -148,7 +149,7 @@ class Calculator {
                 .stream()
                 .map(e -> e.getPrice())
                 .reduce(BigDecimal.ZERO, BigDecimal::add)
-                .divide(BigDecimal.valueOf(singleCategory.size()));
+                .divide(BigDecimal.valueOf(singleCategory.size()), RoundingMode.HALF_UP);
     }
 
     private static Product calculateMinPrice(List<Product> singleCategory) {
