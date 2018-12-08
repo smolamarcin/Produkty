@@ -61,8 +61,11 @@ class Calculator {
             }
         }
 
+//        return categoryWithClientOrders.entrySet().stream()
+//                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().values().stream().max(Comparator
+//                        .naturalOrder()))));
         return categoryWithClientOrders.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().keySet().stream().findFirst().get()));
+                .collect(Collectors.toMap(k -> k.getKey(), v -> v.getValue().entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey()));
     }
 
     static Map<String, Product> calculateMinPricesForCategories(Map<Client, Map<Product, Integer>> orders) {
@@ -86,11 +89,10 @@ class Calculator {
             }
         }
 
-        return categoryWithClientOrders.entrySet()
-                .stream()
-                .collect(Collectors
-                        .toMap(k -> k.getKey(), v -> v.getValue().keySet().stream().map(e -> e.getAge()).findFirst()
-                                .get()));
+//                        .comparingInt(Client::getAge)).get().getAge()));
+        return categoryWithClientOrders.entrySet().stream()
+                .collect(Collectors.toMap(k -> k.getKey(), v -> v.getValue().entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey().getAge()));
+
     }
 
     static Map<Client, BigDecimal> createMapWithCLientsDebt(Map<Client, Map<Product, Integer>> orders) {
@@ -157,21 +159,14 @@ class Calculator {
                 .collect(Collectors.groupingBy(p -> p.getCategory()));
     }
 
-    private static void updateCategoryWithClientOrders(String category, Map<Client, Integer> clientOrders, Map
+    private static void updateCategoryWithClientOrders(String category, Map<Client, Integer> singleClientOrder, Map
             <String, Map<Client, Integer>> categoryWithClientOrders) {
         if (categoryWithClientOrders.containsKey(category)) {
-            if (needToUpdateMap(category, clientOrders, categoryWithClientOrders)) {
-                categoryWithClientOrders.put(category, clientOrders);
-            }
+            Map<Client, Integer> actualMap = categoryWithClientOrders.get(category);
+            actualMap.putAll(singleClientOrder);
         } else {
-            categoryWithClientOrders.put(category, clientOrders);
+            categoryWithClientOrders.put(category, singleClientOrder);
         }
-    }
-
-    private static boolean needToUpdateMap(String category, Map<Client, Integer> clientOrders, Map<String, Map<Client, Integer>>
-            categoryWithClientOrders) {
-        return categoryWithClientOrders.get(category).values().stream().reduce(Integer::sum).get() <
-                clientOrders.values().stream().reduce(Integer::sum).get();
     }
 
 
