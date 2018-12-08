@@ -186,4 +186,19 @@ class Calculator {
         BigDecimal orderSUmmary = entry.getValue();
         return client.getBalance().subtract(orderSUmmary);
     }
+
+    public static boolean isClientAbleToPay(Client client, Map<Client, Map<Product, Integer>> orders) {
+        Map<Product, Integer> clientOrders = orders.get(client);
+        BigDecimal totalPrice = calculateTotalOrderPrice(clientOrders);
+        int i = client.getBalance().compareTo(totalPrice);
+        return i > 0;
+    }
+
+    private static BigDecimal calculateTotalOrderPrice(Map<Product, Integer> clientOrders) {
+        return clientOrders.entrySet()
+                .stream()
+                .map(o->o.getKey().getPrice().multiply(BigDecimal.valueOf(o.getValue())))
+                .reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+    }
+
 }

@@ -13,14 +13,14 @@ public class ParserTest {
 
     @Test
     public void shouldRetrieveAllLinesFromFile() {
-        List<String> lines = Parser.readLinesFromFile("zamowieniaTest.csv");
+        List<String> lines = Parser.readLinesFromFile("src/test/resources/testFile.csv");
         assertFalse(lines.isEmpty());
         assertEquals(lines.size(),5);
     }
 
     @Test
     public void shouldRetrieveAllClientsFromFile() {
-        List<String> lines = Parser.readLinesFromFile("zamowieniaTest.csv");
+        List<String> lines = Parser.readLinesFromFile("src/test/resources/testFile.csv");
         List<Client> clients = Parser.retrieveClientsData(lines);
 
         assertEquals(5,clients.size());
@@ -33,7 +33,7 @@ public class ParserTest {
 
     @Test
     public void shouldRetrieveClientsWithOrders() {
-        List<String> lines = Parser.readLinesFromFile("zamowieniaTest.csv");
+        List<String> lines = Parser.readLinesFromFile("src/test/resources/testFile.csv");
         Parser.readClientsWithOrders(lines);
         Map<Client,Map<Product,Integer>> clientsWithOrders =Parser.readClientsWithOrders(lines);
 
@@ -48,7 +48,7 @@ public class ParserTest {
 
     @Test
     public void shouldSumOrdersFromMultipleFiles() {
-        List<String> lines = Parser.readLinesFromFile("zamowieniaTest.csv","zamowieniaTest2.csv");
+        List<String> lines = Parser.readLinesFromFile("src/test/resources/testFile.csv", "src/test/resources/testFile2.csv");
         Parser.readClientsWithOrders(lines);
         Map<Client,Map<Product,Integer>> actuaClientsWithOrders =Parser.readClientsWithOrders(lines);
 
@@ -59,9 +59,5 @@ public class ParserTest {
 
         assertEquals(actuaClientsWithOrders.size(),4);
         assertEquals(actuaClientsWithOrders.get(expectedClient),expectedClientProdcts);
-
-
-
-
     }
 }

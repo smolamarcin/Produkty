@@ -120,4 +120,10 @@ public class CalculatorTest {
 
 
         assertEquals(actualMap,expectedMap);    }
+
+    @Test
+    public void checkIsClientAbleToPay() {
+        Client poorExistingClient = new Client("Jan", "Kos", 18, new BigDecimal("20000"));
+        boolean isAbleToPay = Calculator.isClientAbleToPay(poorExistingClient,orders);
+    }
 }

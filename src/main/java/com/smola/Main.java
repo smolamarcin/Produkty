@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
-        Zakupy zakupy = new Zakupy("zamowieniaTest.csv","zamowieniaTest2.csv");
+        Zakupy zakupy = new Zakupy("zamowieniaTest.csv", "zamowieniaTest2.csv");
         System.out.println(zakupy);
         //Wyznaczanie klienta, ktory zaplacil najwiecej za zakupy
         Client mostValuableClient = Calculator.calculateMostValuableClient(zakupy.getOrders());
@@ -28,8 +28,14 @@ public class Main {
                 .findMostActiveClientsForEachCategory(zakupy.getOrders());
         System.out.println(mostActiveClientsForEachCategory);
         //Sprawdz, czy klient jest w stanie zaplacic za zakupy.
-        Map<Boolean, List<Client>> clientAbleToPayForOrders = Calculator.areClientAbleToPayForOrders(zakupy.getOrders());
+        // Mapa z pogrupowanymi ludzmi (sa w stanie zaplacic lub nie)
+        Map<Boolean, List<Client>> clientAbleToPayForOrders = Calculator
+                .areClientAbleToPayForOrders(zakupy.getOrders());
         System.out.println(clientAbleToPayForOrders);
+        // Czy konkretny klient jest w stanie zaplacic
+        Client client = new Client("Janina", "Nowak", 38, new BigDecimal(3434));
+        boolean ableToPay = Calculator.isClientAbleToPay(client, zakupy.getOrders());
+        System.out.println(ableToPay);
         // Wykonaj mape, w ktorej jako klucz podasz klienta, a jako wartosc jego dlug
         Map<Client, BigDecimal> mapWithCLientsDebt = Calculator.createMapWithCLientsDebt(zakupy.getOrders());
         System.out.println(mapWithCLientsDebt);
