@@ -14,7 +14,9 @@ class Calculator {
 
         return clientsWithSummaryOrder.entrySet()
                 .stream()
-                .max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
+                .max(Comparator.comparing(Map.Entry::getValue))
+                .get()
+                .getKey();
     }
 
     static Client calculateMostValuableClient(Map<Client, Map<Product, Integer>> orders, String category) {
@@ -27,7 +29,10 @@ class Calculator {
                                 .map(calculateTotalOrderPrice())
                                 .max(Comparator.naturalOrder())
                                 .orElse(BigDecimal.ZERO)));
-        return clientWithOrderSummary.entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey();
+        return clientWithOrderSummary.entrySet().stream()
+                .max(Comparator.comparing(Map.Entry::getValue))
+                .get()
+                .getKey();
     }
 
     static Map<String, BigDecimal> calculateAveragePriceForProductCategories(Map<Client, Map<Product, Integer>>
@@ -61,9 +66,6 @@ class Calculator {
             }
         }
 
-//        return categoryWithClientOrders.entrySet().stream()
-//                .collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue().values().stream().max(Comparator
-//                        .naturalOrder()))));
         return categoryWithClientOrders.entrySet().stream()
                 .collect(Collectors.toMap(k -> k.getKey(), v -> v.getValue().entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey()));
     }
@@ -89,9 +91,11 @@ class Calculator {
             }
         }
 
-//                        .comparingInt(Client::getAge)).get().getAge()));
         return categoryWithClientOrders.entrySet().stream()
-                .collect(Collectors.toMap(k -> k.getKey(), v -> v.getValue().entrySet().stream().max(Comparator.comparing(Map.Entry::getValue)).get().getKey().getAge()));
+                .collect(Collectors.toMap(k -> k.getKey(), v -> v.getValue().entrySet().stream().max(Comparator.comparing(Map.Entry::getValue))
+                        .get()
+                        .getKey()
+                        .getAge()));
 
     }
 
