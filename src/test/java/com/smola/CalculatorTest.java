@@ -31,15 +31,15 @@ public class CalculatorTest {
 
     @Test
     public void calculateClientWhoPaidTheMost() {
-        Client actualClient = Calculator.calculateMostValuableClient(orders);
+        Client actualClient = Calculator.calculateMostValuableClientInCategory(orders);
         assertEquals(actualClient, new Client("Jan", "Kos", 18, new BigDecimal("20000")));
     }
 
 
     @Test
-    public void calculateCLientWhoPaidTheMost_inGivenCategory() {
-        Client actualClient_Books = Calculator.calculateMostValuableClient(orders, "Ksiazka");
-        Client actualClient_Electronic = Calculator.calculateMostValuableClient(orders, "Elektronika");
+    public void calculateClientWhoPaidTheMost_inGivenCategory() {
+        Client actualClient_Books = Calculator.calculateMostValuableClientInCategory(orders, "Ksiazka");
+        Client actualClient_Electronic = Calculator.calculateMostValuableClientInCategory(orders, "Elektronika");
 
         assertEquals(actualClient_Books, new Client("Jan", "Kowalski", 19, new BigDecimal("1000")));
         assertEquals(actualClient_Electronic, new Client("Jan", "Kos", 18, new BigDecimal("20000")));

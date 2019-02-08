@@ -7,7 +7,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 class Calculator {
-    static Client calculateMostValuableClient(Map<Client, Map<Product, Integer>> orders) {
+    static Client calculateMostValuableClientInCategory(Map<Client, Map<Product, Integer>> orders) {
         Map<Client, BigDecimal> clientsWithSummaryOrder = orders.entrySet()
                 .stream()
                 .collect(Collectors.toMap(singleEntry -> singleEntry.getKey()
@@ -20,20 +20,36 @@ class Calculator {
                 .getKey();
     }
 
-    static Client calculateMostValuableClient(Map<Client, Map<Product, Integer>> orders, String category) {
-        Map<Client, BigDecimal> clientWithOrderSummary = orders
-                .entrySet()
-                .stream()
+    static Client calculateMostValuableClientInCategory(Map<Client, Map<Product, Integer>> orders, String category) {
+        // one way
+//        Map<Client, BigDecimal> clientWithOrderSummary = orders
+//                .entrySet()
+//                .stream()
+//                .collect(Collectors.toMap(Map.Entry::getKey,
+//                        entry -> entry.getValue().entrySet().stream()
+//                                .filter(e -> e.getKey().getCategory().equalsIgnoreCase(category))
+//                                .map(calculateTotalOrderPrice())
+//                                .max(Comparator.naturalOrder())
+//                                .orElse(BigDecimal.ZERO)));
+//        return clientWithOrderSummary.entrySet()
+//                .stream()
+//                .max(Comparator.comparing(Map.Entry::getValue))
+//                .get()
+//                .getKey();
+
+        Map<Client, Map<Product, Integer>> ordersInGivenCategory = orders.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey,
                         entry -> entry.getValue().entrySet().stream()
-                                .filter(e -> e.getKey().getCategory().equalsIgnoreCase(category))
-                                .map(calculateTotalOrderPrice())
-                                .max(Comparator.naturalOrder())
-                                .orElse(BigDecimal.ZERO)));
-        return clientWithOrderSummary.entrySet().stream()
-                .max(Comparator.comparing(Map.Entry::getValue))
-                .get()
-                .getKey();
+                                .filter(order -> order.getKey().getCategory().equalsIgnoreCase(category))
+                                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))));
+        Map<Client, BigDecimal> clientsOfGivenCategory = ordersInGivenCategory.entrySet()
+                .stream()
+                .collect(Collectors.toMap(e -> e.getKey(), v -> v.getValue().entrySet()
+                        .stream()
+                        .map(o -> o.getKey().getPrice().multiply(BigDecimal.valueOf(o.getValue())))
+                        .reduce(BigDecimal::add)
+                        .orElse(BigDecimal.ZERO)));
+        return Collections.max(clientsOfGivenCategory.entrySet(), Map.Entry.comparingByValue()).getKey();
     }
 
     static Map<String, BigDecimal> calculateAveragePriceForProductCategories(Map<Client, Map<Product, Integer>>
@@ -58,11 +74,10 @@ class Calculator {
         Map<String, Map<Client, Integer>> categoryWithClientOrders = new HashMap<>();
 
         for (Map.Entry<Client, Map<Product, Integer>> entry : orders.entrySet()) {
-            Set<Map.Entry<Product, Integer>> entries = entry.getValue().entrySet();
-            for (Map.Entry<Product, Integer> productIntegerEntry : entries) {
+            for (Map.Entry<Product, Integer> nbOfProducts : entry.getValue().entrySet()) {
                 Map<Client, Integer> clientOrders = new HashMap<>();
-                clientOrders.put(entry.getKey(), productIntegerEntry.getValue());
-                String category = productIntegerEntry.getKey().getCategory();
+                clientOrders.put(entry.getKey(), nbOfProducts.getValue());
+                String category = nbOfProducts.getKey().getCategory();
                 updateCategoryWithClientOrders(category, clientOrders, categoryWithClientOrders);
             }
         }
@@ -108,7 +123,7 @@ class Calculator {
 
         return clientsWithSummaryOrder.entrySet()
                 .stream()
-                .collect(Collectors.toMap(e->e.getKey(),e->calculateDebt(e)));
+                .collect(Collectors.toMap(e -> e.getKey(), e -> calculateDebt(e)));
 
     }
 
@@ -183,22 +198,22 @@ class Calculator {
 
     private static BigDecimal calculateDebt(Map.Entry<Client, BigDecimal> entry) {
         Client client = entry.getKey();
-        BigDecimal orderSUmmary = entry.getValue();
-        return client.getBalance().subtract(orderSUmmary);
+        BigDecimal orderSummary = entry.getValue();
+        return client.getBalance().subtract(orderSummary);
     }
 
     public static boolean isClientAbleToPay(Client client, Map<Client, Map<Product, Integer>> orders) {
         Map<Product, Integer> clientOrders = orders.get(client);
         BigDecimal totalPrice = calculateTotalOrderPrice(clientOrders);
-        int i = client.getBalance().compareTo(totalPrice);
-        return i > 0;
+        return client.getBalance().compareTo(totalPrice) >= 0;
     }
 
     private static BigDecimal calculateTotalOrderPrice(Map<Product, Integer> clientOrders) {
         return clientOrders.entrySet()
                 .stream()
-                .map(o->o.getKey().getPrice().multiply(BigDecimal.valueOf(o.getValue())))
-                .reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+                .map(o -> o.getKey().getPrice().multiply(BigDecimal.valueOf(o.getValue())))
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO);
     }
 
 }

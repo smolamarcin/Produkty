@@ -9,10 +9,10 @@ public class Main {
         Zakupy zakupy = new Zakupy("zamowieniaTest.csv", "zamowieniaTest2.csv");
         System.out.println(zakupy);
         //Wyznaczanie klienta, ktory zaplacil najwiecej za zakupy
-        Client mostValuableClient = Calculator.calculateMostValuableClient(zakupy.getOrders());
+        Client mostValuableClient = Calculator.calculateMostValuableClientInCategory(zakupy.getOrders());
         System.out.println(mostValuableClient);
         //Wyznacz klienta, ktory zaplacil najwiecej za zakupy w danej kategorii
-        Client mostValuableCLientInCategory = Calculator.calculateMostValuableClient(zakupy.getOrders(), "ksiazka");
+        Client mostValuableCLientInCategory = Calculator.calculateMostValuableClientInCategory(zakupy.getOrders(), "ksiazka");
         System.out.println(mostValuableCLientInCategory);
         //Wykonaj zestawienie (mape), w ktorej pokazesz kategorie produktow, ktore najchetniej w tym wieku kupowano
         Map<String, Integer> agesOfClientsForEachCategory = Calculator
